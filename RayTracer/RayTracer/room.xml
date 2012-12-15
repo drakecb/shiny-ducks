@@ -1,0 +1,55 @@
+<!--objects in the room-->
+<sphere>
+	<R>0</R>
+	<G>0.8</G>
+	<B>0</B>
+	<F>.2</F>
+	<x>2</x>
+	<y>-2</y>
+	<z>-2</z>
+	<radius>1</radius>
+</sphere>
+
+<sphere>
+	<R>.3</R>
+	<G>1</G>
+	<B>0</B>
+	<F>1</F>
+	<x>-7</x>
+	<y>-6</y>
+	<z>-4</z>
+	<radius>2</radius>
+</sphere>
+
+<plane>
+	<R>0</R>
+	<G>0</G>
+	<B>0.5</B>
+	<F>0.1</F>
+	<x>0</x>
+	<y>1</y>
+	<z>0</z>
+	<distance>-15</distance>
+</plane>
+
+<plane>
+	<R>1</R>
+	<G>0</G>
+	<B>0</B>
+	<F>0.1</F>
+	<x>0</x>
+	<y>0</y>
+	<z>-1</z>
+	<distance>15</distance>
+</plane>
+
+<plane>
+	<R>0</R>
+	<G>0.5</G>
+	<B>0</B>
+	<F>0.1</F>
+	<x>1</x>
+	<y>0</y>
+	<z>0</z>
+	<distance>-15</distance>
+</plane>
