@@ -278,10 +278,26 @@ void parsePlane(TiXmlElement * sceneElem, Object* sceneObject, vector<Object *> 
 	y = atof((attrElem = attrElem->NextSiblingElement())->GetText());
 	z = atof((attrElem = attrElem->NextSiblingElement())->GetText());
 	d = atof((attrElem = attrElem->NextSiblingElement())->GetText());
-	Vect origin(x,y,z);
+	Vect normal(x,y,z);
 	Color color(R,G,B,F);
-	sceneObject = new Plane(origin, d, color);
+	sceneObject = new Plane(normal, d, color);
 	sceneObjects.push_back(dynamic_cast<Object*>(sceneObject));
+}
+
+void parseLight(TiXmlElement * sceneElem, Source* lightSource, vector<Source *> &lightSources)
+{
+	TiXmlElement * attrElem;
+	float R,G,B,x,y,z;
+	R = atof((attrElem = sceneElem->FirstChildElement())->GetText());
+	G = atof((attrElem = attrElem->NextSiblingElement())->GetText());
+	B = atof((attrElem = attrElem->NextSiblingElement())->GetText());
+	x = atof((attrElem = attrElem->NextSiblingElement())->GetText());
+	y = atof((attrElem = attrElem->NextSiblingElement())->GetText());
+	z = atof((attrElem = attrElem->NextSiblingElement())->GetText());
+	Vect position(x,y,z);
+	Color color(R,G,B,1);
+	lightSource = new Light(position, color);
+	lightSources.push_back(dynamic_cast<Source*>(lightSource));
 }
 
 int parseSceneDescription(const char * sceneFileName, Object* sceneObject, Source* lightSource, vector<Object *> &sceneObjects, vector<Source *> &lightSources) {
@@ -302,6 +318,9 @@ int parseSceneDescription(const char * sceneFileName, Object* sceneObject, Sourc
 		}
 		else if("plane" == elemType) {
 			parsePlane(sceneElem, sceneObject, sceneObjects);
+		}
+		else if("light" == elemType) {
+			parseLight(sceneElem, lightSource, lightSources);
 		}
 	}
 
@@ -337,7 +356,7 @@ int main (int argc, char *argv[]) {
 	
 	Vect newSphereLocation (2, 0, 0);
 
-	Vect cameraPosition (3, 3, 5);
+	Vect cameraPosition (0, 2, 20);
 
 	Vect cameraLookAt (0, 0, 0);
 	Vect cameraDiff (cameraPosition.getVectX() - cameraLookAt.getVectX(), cameraPosition.getVectY() - cameraLookAt.getVectY(), cameraPosition.getVectZ() - cameraLookAt.getVectZ());
