@@ -387,6 +387,8 @@ int main (int argc, char *argv[]) {
 	std::cout << "Image width of " << WIDTH << " and height of " << HEIGHT << endl;
 	std::cout << "Image DPI of " << DPI << endl;
 
+	// COMMENCE THREADING!
+	#pragma omp parallel for
 	for (int x = 0; x < WIDTH; x++)
 	{
 		for (int y = 0; y < HEIGHT; y++)
