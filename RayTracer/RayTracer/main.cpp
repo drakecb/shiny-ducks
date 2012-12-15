@@ -1,4 +1,5 @@
 #include "main.h"
+#define FILE_NAME_LENGTH 100
 
 using namespace std;
 
@@ -246,8 +247,80 @@ Color getColorAt(Vect intersectionPosition, Vect intersectionRayDirection, vecto
 	return finalColor.clip();
 }
 
+void parseSphere(TiXmlElement * sceneElem, Object* sceneObject, vector<Object *> &sceneObjects)
+{
+	TiXmlElement * attrElem;
+	Color * color;
+	float R,G,B,F,x,y,z,r;
+	R = atof((attrElem = sceneElem->FirstChildElement())->GetText());
+	G = atof((attrElem = attrElem->NextSiblingElement())->GetText());
+	B = atof((attrElem = attrElem->NextSiblingElement())->GetText());
+	F = atof((attrElem = attrElem->NextSiblingElement())->GetText());
+	x = atof((attrElem = attrElem->NextSiblingElement())->GetText());
+	y = atof((attrElem = attrElem->NextSiblingElement())->GetText());
+	z = atof((attrElem = attrElem->NextSiblingElement())->GetText());
+	r = atof((attrElem = attrElem->NextSiblingElement())->GetText());
+	Vect origin(x,y,z);
+	color = new Color(R,G,B,F);
+	sceneObject = new Sphere(origin, r, *color);
+	sceneObjects.push_back(dynamic_cast<Object*>(sceneObject));
+}
+
+void parsePlane(TiXmlElement * sceneElem, Object* sceneObject, vector<Object *> &sceneObjects)
+{
+	TiXmlElement * attrElem;
+	float R,G,B,F,x,y,z,d;
+	R = atof((attrElem = sceneElem->FirstChildElement())->GetText());
+	G = atof((attrElem = attrElem->NextSiblingElement())->GetText());
+	B = atof((attrElem = attrElem->NextSiblingElement())->GetText());
+	F = atof((attrElem = attrElem->NextSiblingElement())->GetText());
+	x = atof((attrElem = attrElem->NextSiblingElement())->GetText());
+	y = atof((attrElem = attrElem->NextSiblingElement())->GetText());
+	z = atof((attrElem = attrElem->NextSiblingElement())->GetText());
+	d = atof((attrElem = attrElem->NextSiblingElement())->GetText());
+	Vect origin(x,y,z);
+	Color color(R,G,B,F);
+	sceneObject = new Plane(origin, d, color);
+	sceneObjects.push_back(dynamic_cast<Object*>(sceneObject));
+}
+
+int parseSceneDescription(const char * sceneFileName, Object* sceneObject, Source* lightSource, vector<Object *> &sceneObjects, vector<Source *> &lightSources) {
+	TiXmlDocument sceneFile(sceneFileName);
+	if(!sceneFile.LoadFile()) return -1;
+
+	TiXmlHandle hSceneFile(&sceneFile);
+	TiXmlHandle hSceneElem = hSceneFile.FirstChildElement();;
+	TiXmlElement * sceneElem;
+
+	sceneElem = hSceneElem.Element();
+	string elemType;
+
+	for(sceneElem; sceneElem; sceneElem = sceneElem->NextSiblingElement()) {
+		elemType = sceneElem->Value();
+		if("sphere" == elemType){
+			parseSphere(sceneElem, sceneObject, sceneObjects);
+		}
+		else if("plane" == elemType) {
+			parsePlane(sceneElem, sceneObject, sceneObjects);
+		}
+	}
+
+	return 0;
+}
+
 int main (int argc, char *argv[]) {
 	std::cout << "rendering..." << std::endl;
+
+	char sceneFileName[FILE_NAME_LENGTH] = "room.xml";
+	vector<Source *> lightSources;
+	vector<Object *> sceneObjects;
+
+	Object* sceneObject;
+	Source* lightSource;
+
+	//std::cout << "Enter the name of the scene description file: ";
+	//std::cin >> sceneFileName;
+	parseSceneDescription("room.xml", sceneObject, lightSource, sceneObjects, lightSources);
 
 	clock_t t1, t2;
 	t1 = clock();
@@ -283,17 +356,7 @@ int main (int argc, char *argv[]) {
 
 	Vect lightPosition (-7, 10, -10);
 	Light sceneLight (lightPosition, whiteLight);
-	vector<Source *> lightSources;
 	lightSources.push_back(dynamic_cast<Source *>(&sceneLight));
-
-	// scene objects
-	Sphere sceneSphere (origin, 1, lightGreen);
-	Sphere sceneSphere2 (newSphereLocation, 0.5, maroon);
-	Plane scenePlane (Y, -1, tileFloor);
-	vector<Object *> sceneObjects;
-	sceneObjects.push_back(dynamic_cast<Object *>(&sceneSphere));
-	sceneObjects.push_back(dynamic_cast<Object *>(&sceneSphere2));
-	sceneObjects.push_back(dynamic_cast<Object *>(&scenePlane));
 
 	int pixelIndex, aaIndex;
 	double xAmount, yAmount;
