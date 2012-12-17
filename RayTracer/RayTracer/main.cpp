@@ -54,27 +54,9 @@ Color getColorAt(Vect intersectionPosition, Vect intersectionRayDirection, vecto
 	Color winningObjectColor = sceneObjects.at(winningObjectIndex)->getColor();
 	Vect winningObjectNormal = sceneObjects.at(winningObjectIndex)->getNormalAt(intersectionPosition);
 	
-	if (winningObjectColor.getColorSpecial() == 2) {
-		// checkered/tile floor pattern
-
-		int square = (int) floor(intersectionPosition.getVectX()) + (int) floor(intersectionPosition.getVectZ());
-
-		if ((square % 2) == 0) {
-			// black tile
-			winningObjectColor.setColorRed(0);
-			winningObjectColor.setColorGreen(0);
-			winningObjectColor.setColorBlue(0);
-		} else {
-			// white tile
-			winningObjectColor.setColorRed(1);
-			winningObjectColor.setColorGreen(1);
-			winningObjectColor.setColorBlue(1);
-		}
-	}
-
 	Color finalColor = winningObjectColor.colorScalar(ambientLight);
 
-	if (winningObjectColor.getColorSpecial() > 0 && winningObjectColor.getColorSpecial() <= 1) {
+	if (winningObjectColor.getColorReflect() > 0 && winningObjectColor.getColorReflect() <= 1) {
 		// reflection from objects with specular intensity
 		double dot1 = winningObjectNormal.dotProduct(intersectionRayDirection.negative());
 		Vect scalar1 = winningObjectNormal.vectMult(dot1);
@@ -106,7 +88,7 @@ Color getColorAt(Vect intersectionPosition, Vect intersectionRayDirection, vecto
 				// Recursive call here
 				Color reflectionIntersectionColor = getColorAt(reflectionIntersectionPosition, reflectionIntersectionRayDirection, sceneObjects, winningObjectWithReflectionIndex, lightSources, accuracy, ambientLight);
 
-				finalColor = finalColor.colorAdd(reflectionIntersectionColor.colorScalar(winningObjectColor.getColorSpecial()));
+				finalColor = finalColor.colorAdd(reflectionIntersectionColor.colorScalar(winningObjectColor.getColorReflect()));
 			}
 		}
 	}
@@ -150,7 +132,7 @@ Color getColorAt(Vect intersectionPosition, Vect intersectionRayDirection, vecto
 				Color adjustment = actualColor.colorScalar(cosAngle);
 				finalColor = finalColor.colorAdd(adjustment);
 
-				if (winningObjectColor.getColorSpecial() > 0 && winningObjectColor.getColorSpecial() <= 1) {
+				if (winningObjectColor.getColorReflect() > 0 && winningObjectColor.getColorReflect() <= 1) {
 					double dot1 = winningObjectNormal.dotProduct(intersectionRayDirection.negative());
 					Vect scalar1 = winningObjectNormal.vectMult(dot1);
 					Vect add1 = scalar1.vectAdd(intersectionRayDirection);
@@ -162,7 +144,7 @@ Color getColorAt(Vect intersectionPosition, Vect intersectionRayDirection, vecto
 					double specular = reflectionDirection.dotProduct(lightDirection);
 					if (specular > 0) {
 						specular = pow(specular, 10);
-						finalColor = finalColor.colorAdd(lightSources.at(lightIndex)->getLightColor().colorScalar(specular * winningObjectColor.getColorSpecial()));
+						finalColor = finalColor.colorAdd(lightSources.at(lightIndex)->getLightColor().colorScalar(specular * winningObjectColor.getColorReflect()));
 					}
 				}
 			} 

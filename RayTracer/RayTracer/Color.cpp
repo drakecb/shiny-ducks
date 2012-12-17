@@ -10,7 +10,7 @@ Color::Color(double r, double g, double b, double s) {
 	red = r;
 	green = g;
 	blue = b;
-	special = s;
+	reflect = s;
 }
 
 double Color::brightness() {
@@ -18,28 +18,28 @@ double Color::brightness() {
 }
 
 Color Color::colorScalar(double scalar) {
-	return Color (red * scalar, green * scalar, blue * scalar, special);
+	return Color (red * scalar, green * scalar, blue * scalar, reflect);
 }
 
 Color Color::colorAdd(Color color) {
-	return Color (red + color.getColorRed(), green + color.getColorGreen(), blue + color.getColorBlue(), special);
+	return Color (red + color.getColorRed(), green + color.getColorGreen(), blue + color.getColorBlue(), reflect);
 }
 
 Color Color::colorMultiply(Color color) {
-	return Color (red * color.getColorRed(), green * color.getColorGreen(), blue * color.getColorBlue(), special);
+	return Color (red * color.getColorRed(), green * color.getColorGreen(), blue * color.getColorBlue(), reflect);
 }
 
 Color Color::colorAverage(Color color) {
-	return Color ((red + color.getColorRed()) / 2.0, (green + color.getColorGreen()) / 2.0, (blue + color.getColorBlue()) / 2.0, special);
+	return Color ((red + color.getColorRed()) / 2.0, (green + color.getColorGreen()) / 2.0, (blue + color.getColorBlue()) / 2.0, reflect);
 }
 
 Color Color::clip() {
-	double alllight = red + green + blue;
-	double excesslight = alllight - 3;
+	double allLight = red + green + blue;
+	double excesslight = allLight - 3;
 	if (excesslight > 0) {
-		red = red + excesslight * (red / alllight);
-		green = green + excesslight * (green / alllight);
-		blue = blue + excesslight * (blue / alllight);
+		red = red + excesslight * (red / allLight);
+		green = green + excesslight * (green / allLight);
+		blue = blue + excesslight * (blue / allLight);
 	}
 	if (red > 1) { red = 1; }
 	if (green > 1) { green = 1; }
@@ -48,5 +48,5 @@ Color Color::clip() {
 	if (green < 0) { green = 0; }
 	if (blue < 0) { blue = 0; }
 	
-	return Color (red, green, blue, special);
+	return Color (red, green, blue, reflect);
 }

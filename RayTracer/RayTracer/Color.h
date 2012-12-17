@@ -4,7 +4,7 @@
 #include "math.h"
 
 class Color {
-	double red, green, blue, special;
+	double red, green, blue, reflect;
 
 public:
 	Color();
@@ -14,12 +14,12 @@ public:
 	double getColorRed() { return red; }
 	double getColorGreen() { return green; }
 	double getColorBlue() { return blue; }
-	double getColorSpecial() { return special; }
+	double getColorReflect() { return reflect; }
 
 	void setColorRed(double redValue) { red = redValue; };
 	void setColorGreen(double greenValue) { green = greenValue; };
 	void setColorBlue(double blueValue) { blue = blueValue; };
-	void setColorSpecial(double specialValue) { special = specialValue; };
+	void setColorReflect(double reflectValue) { reflect = reflectValue; };
 
 	// for shadows
 	double brightness();
