@@ -6,8 +6,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <cmath>
-#include <limits>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -26,13 +24,13 @@
 #include "tinyxml.h"
 #include "tinystr.h"
 
-#define AA_DEPTH 1
+#define AA_DEPTH 4
 #define AA_THRESHOLD 0.1
 #define AMBIENT_LIGHT 0.2
 #define ACCURACY 0.000001
-#define WIDTH 480
-#define HEIGHT 360
-#define DPI 300
+#define WIDTH 1920
+#define HEIGHT 1080
+#define DPI 72
 #define N WIDTH * HEIGHT
 
 #endif

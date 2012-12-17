@@ -339,14 +339,12 @@ int main (int argc, char *argv[]) {
 
 	//std::cout << "Enter the name of the scene description file: ";
 	//std::cin >> sceneFileName;
-	parseSceneDescription("room.xml", sceneObject, lightSource, sceneObjects, lightSources);
+	parseSceneDescription(sceneFileName, sceneObject, lightSource, sceneObjects, lightSources);
 
 	clock_t t1, t2;
 	t1 = clock();
 
 	RGBType *pixels = new RGBType[N];
-
-	double aspectRatio = (double) WIDTH / (double) HEIGHT;
 
 	// Origin Vector
 	Vect origin (0, 0, 0);
@@ -386,6 +384,8 @@ int main (int argc, char *argv[]) {
 	std::cout << AA_DEPTH * AA_DEPTH << "xAA" << endl;
 	std::cout << "Image width of " << WIDTH << " and height of " << HEIGHT << endl;
 	std::cout << "Image DPI of " << DPI << endl;
+
+	double aspectRatio = (double) WIDTH / (double) HEIGHT;
 
 	// COMMENCE THREADING!
 	#pragma omp parallel for
@@ -505,7 +505,7 @@ int main (int argc, char *argv[]) {
 
 	std::cout << pixels[76800].r << endl;
 
-	savebmp("scene_aa.bmp", WIDTH, HEIGHT, DPI, pixels);
+	savebmp("scene.bmp", WIDTH, HEIGHT, DPI, pixels);
 
 	delete pixels, tempRed, tempGreen, tempBlue;
 
@@ -513,7 +513,7 @@ int main (int argc, char *argv[]) {
 	float diff = ((float) t2 - (float) t1) / 1000.0f;
 
 	std::cout << "\nRendering completed in " << diff << " seconds" << endl;
-	std::system("scene_aa.bmp");
+	std::system("scene.bmp");
 	std::system("pause");
 
 	return 0;
