@@ -18,12 +18,10 @@
 #include "Color.h"
 #include "Light.h"
 #include "Source.h"
-#include "Object.h"
 #include "Sphere.h"
 #include "Plane.h"
-#include "tinyxml.h"
-#include "tinystr.h"
 #include "BMP_utils.h"
+#include "SDL_utils.h"
 
 #define AA_DEPTH 1
 #define AA_THRESHOLD 0.1
