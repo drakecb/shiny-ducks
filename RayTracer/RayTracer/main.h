@@ -23,7 +23,6 @@
 #include "BMP_utils.h"
 #include "SDL_utils.h"
 
-#define AA_THRESHOLD 0.1
 #define AMBIENT_LIGHT 0.2
 #define ACCURACY 0.000001
 #define FILE_NAME_LENGTH 100
