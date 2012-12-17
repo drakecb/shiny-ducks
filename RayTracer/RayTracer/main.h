@@ -23,8 +23,9 @@
 #include "Plane.h"
 #include "tinyxml.h"
 #include "tinystr.h"
+#include "BMP_utils.h"
 
-#define AA_DEPTH 4
+#define AA_DEPTH 1
 #define AA_THRESHOLD 0.1
 #define AMBIENT_LIGHT 0.2
 #define ACCURACY 0.000001
