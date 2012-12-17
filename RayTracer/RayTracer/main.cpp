@@ -263,9 +263,6 @@ int main (int argc, char *argv[]) {
 			pixelIndex = y * width + x;
 			
 			// start with blank pixels
-			//double tempRed[aaDepth * aaDepth];
-			//double tempGreen[aaDepth * aaDepth];
-			//double tempBlue[aaDepth * aaDepth];
 			double* tempRed = new double[aaDepth * aaDepth];
 			double* tempGreen = new double[aaDepth * aaDepth];
 			double* tempBlue = new double[aaDepth * aaDepth];
@@ -372,8 +369,6 @@ int main (int argc, char *argv[]) {
 			pixels[pixelIndex].b = avgBlue;
 		}
 	}
-
-	//std::cout << pixels[76800].r << endl;
 
 	savebmp("scene.bmp", width, height, dpi, pixels);
 

@@ -1,7 +1,5 @@
 #include "BMP_utils.h"
 
-
-
 void savebmp(const char *fileName, int w, int h, int dpi, RGBType *data) {
 	FILE *f;
 	const int k = w * h;
