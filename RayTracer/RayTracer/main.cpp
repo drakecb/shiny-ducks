@@ -165,7 +165,7 @@ int main (int argc, char *argv[]) {
 	std::cout << "\nDo you have a predifined properties file? (Y/N): ";
 	std::cin >> yesOrNo;
 
-	if (yesOrNo == 'Y') {
+	if (yesOrNo == 'Y' || yesOrNo == 'y') {
 		char propertiesFileName[FILE_NAME_LENGTH];
 
 		std::cout << "Enter the name of the properties file: ";
