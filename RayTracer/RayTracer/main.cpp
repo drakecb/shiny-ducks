@@ -158,12 +158,6 @@ int main (int argc, char *argv[]) {
 	std::cout << "===Welcome to the Shiny Ducks Ray Tracer===" << std::endl;
 	std::cout << "Please follow the instructions below to generate an image" << std::endl;
 
-	vector<Source *> lightSources;
-	vector<Object *> sceneObjects;
-
-	Object* sceneObject;
-	Source* lightSource;
-
 	char yesOrNo;
 	char sceneFileName[FILE_NAME_LENGTH];
 	int width, height, aaDepth, dpi;
@@ -210,18 +204,17 @@ int main (int argc, char *argv[]) {
 	clock_t t1, t2;
 	t1 = clock();
 
+	vector<Source *> lightSources;
+	vector<Object *> sceneObjects;
+	Object* sceneObject;
+	Source* lightSource;
+
 	parseSceneDescription(sceneFileName, sceneObject, lightSource, sceneObjects, lightSources);
 	RGBType *pixels = new RGBType[width * height];
 
-	// Origin Vector
-	Vect origin (0, 0, 0);
-	Vect X (1, 0, 0);
 	Vect Y (0, 1, 0);
-	Vect Z (0, 0, 1);
-	
-	Vect newSphereLocation (2, 0, 0);
 
-	Vect cameraPosition (0, 2, 20);
+	Vect cameraPosition (10, 15, 45);
 
 	Vect cameraLookAt (0, 0, 0);
 	Vect cameraDiff (cameraPosition.getVectX() - cameraLookAt.getVectX(), cameraPosition.getVectY() - cameraLookAt.getVectY(), cameraPosition.getVectZ() - cameraLookAt.getVectZ());
@@ -231,20 +224,9 @@ int main (int argc, char *argv[]) {
 	Vect cameraDown = cameraRight.crossProduct(cameraDirection);
 	Camera sceneCamera (cameraPosition, cameraDirection, cameraRight, cameraDown);
 
-	Color whiteLight (1.0, 1.0, 1.0, 0);
-	Color lightGreen (0.5, 1.0, 0.5, 0.3);
-	Color maroon (0.5, 0.25, 0.25, 0.5);
-	Color tileFloor (0.5, 0.75, 0.25, 2);
-	Color gray (0.5, 0.5, 0.5, 0);
-	Color black (0.0, 0.0, 0.0, 0);
-
-	Vect lightPosition (-7, 10, -10);
-	Light sceneLight (lightPosition, whiteLight);
-	lightSources.push_back(dynamic_cast<Source *>(&sceneLight));
-
 	int pixelIndex, aaIndex;
 	double xAmount, yAmount;
-	double tempRed, tempGreen, tempBlue;
+	double *tempRed, *tempGreen, *tempBlue;
 
 	// Print settings to console
 	std::cout << "\nGenerating Image with the following properties. Please wait..." << std::endl;
@@ -263,9 +245,9 @@ int main (int argc, char *argv[]) {
 			pixelIndex = y * width + x;
 			
 			// start with blank pixels
-			double* tempRed = new double[aaDepth * aaDepth];
-			double* tempGreen = new double[aaDepth * aaDepth];
-			double* tempBlue = new double[aaDepth * aaDepth];
+			tempRed = new double[aaDepth * aaDepth];
+			tempGreen = new double[aaDepth * aaDepth];
+			tempBlue = new double[aaDepth * aaDepth];
 
 			for (int aax = 0; aax < aaDepth; aax++)
 			{

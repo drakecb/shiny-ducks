@@ -26,7 +26,6 @@ public:
 	Color colorScalar(double scalar);
 	Color colorAdd(Color color);
 	Color colorMultiply(Color color);
-	Color colorAverage(Color color);
 	Color clip();
 };
 
