@@ -13,8 +13,8 @@ Sphere::Sphere(Vect centerValue, double radiusValue, Color colorValue) {
 }
 
 Vect Sphere::getNormalAt(Vect point) {
-	Vect normal_Vect = point.vectAdd(center.negative()).normalize();
-	return normal_Vect;
+	Vect normalVect = point.vectAdd(center.negative()).normalize();
+	return normalVect;
 }
 
 double Sphere::findIntersection(Ray ray) {
