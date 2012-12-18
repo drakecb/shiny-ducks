@@ -1,75 +1,83 @@
-<!--objects in the room-->
-<sphere>
-	<R>1</R>
-	<G>1</G>
-	<B>0</B>
-	<F>0.5</F>
-	<x>0</x>
-	<y>0</y>
-	<z>-30</z>
-	<radius>20</radius>
-</sphere>
-
-<sphere>
-	<R>1</R>
-	<G>1</G>
-	<B>1</B>
-	<F>0.5</F>
-	<x>-5</x>
-	<y>0</y>
-	<z>-20</z>
-	<radius>10</radius>
-</sphere>
-
-<sphere>
-	<R>1</R>
-	<G>1</G>
-	<B>1</B>
-	<F>0.5</F>
-	<x>5</x>
-	<y>0</y>
-	<z>-20</z>
-	<radius>10</radius>
-</sphere>
-
 <light>
 	<R>1</R>
 	<G>1</G>
 	<B>1</B>
-	<x>0</x>
-	<y>10</y>
-	<z>30</z>
+	<x>10</x>
+	<y>20</y>
+	<z>-20</z>
+</light>
+
+<light>
+	<R>.5</R>
+	<G>.5</G>
+	<B>1</B>
+	<x>-10</x>
+	<y>20</y>
+	<z>10</z>
 </light>
 
 <plane>
 	<R>0</R>
 	<G>0</G>
 	<B>1</B>
-	<F>0.1</F>
+	<F>.3</F>
+	<x>0</x>
+	<y>0</y>
+	<z>1</z>
+	<distance>-40</distance>
+</plane>
+
+<plane>
+	<R>0</R>
+	<G>1</G>
+	<B>0</B>
+	<F>.1</F>
 	<x>0</x>
 	<y>1</y>
 	<z>0</z>
-	<distance>-15</distance>
+	<distance>-20</distance>
 </plane>
 
 <plane>
 	<R>1</R>
 	<G>0</G>
 	<B>0</B>
-	<F>0.1</F>
-	<x>0</x>
+	<F>.1</F>
+	<x>1</x>
 	<y>0</y>
-	<z>-1</z>
-	<distance>20</distance>
+	<z>0</z>
+	<distance>-20</distance>
 </plane>
 
-<plane>
+<sphere>
+	<R>1</R>
+	<G>1</G>
+	<B>0</B>
+	<F>.5</F>
+	<x>-10</x>
+	<y>0</y>
+	<z>0</z>
+	<radius>3</radius>
+</sphere>
+
+<sphere>
 	<R>1</R>
 	<G>0</G>
 	<B>1</B>
 	<F>0.1</F>
-	<x>-1</x>
-	<y>0</y>
-	<z>0</z>
-	<distance>15</distance>
-</plane>
+	<x>10</x>
+	<y>5</y>
+	<z>-10</z>
+	<radius>3</radius>
+</sphere>
+
+<sphere>
+	<R>.7</R>
+	<G>1</G>
+	<B>0</B>
+	<F>0.1</F>
+	<x>-10</x>
+	<y>-15</y>
+	<z>-30</z>
+	<radius>5</radius>
+</sphere>
