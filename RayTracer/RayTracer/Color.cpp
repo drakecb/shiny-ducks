@@ -29,10 +29,6 @@ Color Color::colorMultiply(Color color) {
 	return Color (red * color.getColorRed(), green * color.getColorGreen(), blue * color.getColorBlue(), reflect);
 }
 
-Color Color::colorAverage(Color color) {
-	return Color ((red + color.getColorRed()) / 2.0, (green + color.getColorGreen()) / 2.0, (blue + color.getColorBlue()) / 2.0, reflect);
-}
-
 Color Color::clip() {
 	double allLight = red + green + blue;
 	double excesslight = allLight - 3;

@@ -23,13 +23,8 @@
 #include "BMP_utils.h"
 #include "SDL_utils.h"
 
-#define AA_DEPTH 1
-#define AA_THRESHOLD 0.1
 #define AMBIENT_LIGHT 0.2
 #define ACCURACY 0.000001
-#define WIDTH 1920
-#define HEIGHT 1080
-#define DPI 72
-#define N WIDTH * HEIGHT
+#define FILE_NAME_LENGTH 100
 
 #endif

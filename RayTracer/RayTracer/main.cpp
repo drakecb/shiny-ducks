@@ -1,5 +1,4 @@
 #include "main.h"
-#define FILE_NAME_LENGTH 100
 
 using namespace std;
 
@@ -156,33 +155,66 @@ Color getColorAt(Vect intersectionPosition, Vect intersectionRayDirection, vecto
 
 
 int main (int argc, char *argv[]) {
-	std::cout << "rendering..." << std::endl;
+	std::cout << "===Welcome to the Shiny Ducks Ray Tracer===" << std::endl;
+	std::cout << "Please follow the instructions below to generate an image" << std::endl;
 
-	char sceneFileName[FILE_NAME_LENGTH] = "room.xml";
-	vector<Source *> lightSources;
-	vector<Object *> sceneObjects;
+	char yesOrNo;
+	char sceneFileName[FILE_NAME_LENGTH];
+	int width, height, aaDepth, dpi;
 
-	Object* sceneObject;
-	Source* lightSource;
+	std::cout << "\nDo you have a predifined properties file? (Y/N): ";
+	std::cin >> yesOrNo;
 
-	//std::cout << "Enter the name of the scene description file: ";
-	//std::cin >> sceneFileName;
-	parseSceneDescription(sceneFileName, sceneObject, lightSource, sceneObjects, lightSources);
+	if (yesOrNo == 'Y' || yesOrNo == 'y') {
+		char propertiesFileName[FILE_NAME_LENGTH];
+
+		std::cout << "Enter the name of the properties file: ";
+		std::cin >> propertiesFileName;
+
+		fstream propFile;
+		propFile.open(propertiesFileName);
+		
+		propFile >> width;
+		propFile >> height;
+		propFile >> aaDepth;
+		propFile >> dpi;
+
+		propFile.close();
+
+		std::cout << "Name of the scene description file: ";
+		std::cin >> sceneFileName;
+	} else {
+		std::cout << "\n===Enter the desired properties for generating the image file===" << std::endl;
+		std::cout << "Name of the scene description file: ";
+		std::cin >> sceneFileName;
+
+		std::cout << "Anti-Aliasing Depth: ";
+		std::cin >> aaDepth;
+
+		std::cout << "Width of the Image: ";
+		std::cin >> width;
+
+		std::cout << "Height of the Image: ";
+		std::cin >> height;
+
+		std::cout << "DPI for the Stored Image: ";
+		std::cin >> dpi;
+	}
 
 	clock_t t1, t2;
 	t1 = clock();
 
-	RGBType *pixels = new RGBType[N];
+	vector<Source *> lightSources;
+	vector<Object *> sceneObjects;
+	Object* sceneObject;
+	Source* lightSource;
 
-	// Origin Vector
-	Vect origin (0, 0, 0);
-	Vect X (1, 0, 0);
+	parseSceneDescription(sceneFileName, sceneObject, lightSource, sceneObjects, lightSources);
+	RGBType *pixels = new RGBType[width * height];
+
 	Vect Y (0, 1, 0);
-	Vect Z (0, 0, 1);
-	
-	Vect newSphereLocation (2, 0, 0);
 
-	Vect cameraPosition (0, 2, 20);
+	Vect cameraPosition (10, 15, 45);
 
 	Vect cameraLookAt (0, 0, 0);
 	Vect cameraDiff (cameraPosition.getVectX() - cameraLookAt.getVectX(), cameraPosition.getVectY() - cameraLookAt.getVectY(), cameraPosition.getVectZ() - cameraLookAt.getVectZ());
@@ -192,79 +224,68 @@ int main (int argc, char *argv[]) {
 	Vect cameraDown = cameraRight.crossProduct(cameraDirection);
 	Camera sceneCamera (cameraPosition, cameraDirection, cameraRight, cameraDown);
 
-	Color whiteLight (1.0, 1.0, 1.0, 0);
-	Color lightGreen (0.5, 1.0, 0.5, 0.3);
-	Color maroon (0.5, 0.25, 0.25, 0.5);
-	Color tileFloor (0.5, 0.75, 0.25, 2);
-	Color gray (0.5, 0.5, 0.5, 0);
-	Color black (0.0, 0.0, 0.0, 0);
-
-	Vect lightPosition (-7, 10, -10);
-	Light sceneLight (lightPosition, whiteLight);
-	lightSources.push_back(dynamic_cast<Source *>(&sceneLight));
-
 	int pixelIndex, aaIndex;
 	double xAmount, yAmount;
-	double tempRed, tempGreen, tempBlue;
+	double *tempRed, *tempGreen, *tempBlue;
 
 	// Print settings to console
-	std::cout << "\nSystem Settings:" << endl;
-	std::cout << AA_DEPTH * AA_DEPTH << "xAA" << endl;
-	std::cout << "Image width of " << WIDTH << " and height of " << HEIGHT << endl;
-	std::cout << "Image DPI of " << DPI << endl;
+	std::cout << "\nGenerating Image with the following properties. Please wait..." << std::endl;
+	std::cout << aaDepth * aaDepth << "xAA" << endl;
+	std::cout << "Image width of " << width << " and height of " << height << endl;
+	std::cout << "Image dpi of " << dpi << endl;
 
-	double aspectRatio = (double) WIDTH / (double) HEIGHT;
+	double aspectRatio = (double) width / (double) height;
 
 	// COMMENCE THREADING!
 	#pragma omp parallel for
-	for (int x = 0; x < WIDTH; x++)
+	for (int x = 0; x < width; x++)
 	{
-		for (int y = 0; y < HEIGHT; y++)
+		for (int y = 0; y < height; y++)
 		{
-			pixelIndex = y * WIDTH + x;
+			pixelIndex = y * width + x;
 			
 			// start with blank pixels
-			double tempRed[AA_DEPTH * AA_DEPTH];
-			double tempGreen[AA_DEPTH * AA_DEPTH];
-			double tempBlue[AA_DEPTH * AA_DEPTH];
+			tempRed = new double[aaDepth * aaDepth];
+			tempGreen = new double[aaDepth * aaDepth];
+			tempBlue = new double[aaDepth * aaDepth];
 
-			for (int aax = 0; aax < AA_DEPTH; aax++)
+			for (int aax = 0; aax < aaDepth; aax++)
 			{
-				for (int aay = 0; aay < AA_DEPTH; aay++)
+				for (int aay = 0; aay < aaDepth; aay++)
 				{
-					aaIndex = aay * AA_DEPTH + aax;
+					aaIndex = aay * aaDepth + aax;
 					srand(time(0));
 
 					// create the ray from the camera to this pixel
-					if (AA_DEPTH == 1) {
+					if (aaDepth == 1) {
 						// Don't apply anti-aliasing
-						if (WIDTH > HEIGHT) {
+						if (width > height) {
 							// the image is wider than it is tall
-							xAmount = ((x + 0.5) / WIDTH) *  aspectRatio - (((WIDTH - HEIGHT) / (double) HEIGHT) / 2.0);
-							yAmount = ((HEIGHT - y) + 0.5) / HEIGHT;
-						} else if (HEIGHT > WIDTH) {
+							xAmount = ((x + 0.5) / width) *  aspectRatio - (((width - height) / (double) height) / 2.0);
+							yAmount = ((height - y) + 0.5) / height;
+						} else if (height > width) {
 							// the image is taller than it is wide
-							xAmount = (x + 0.5) / WIDTH;
-							yAmount = (((HEIGHT - y) + 0.5) / HEIGHT) / aspectRatio - (((HEIGHT - WIDTH) / (double) WIDTH) / 2.0);
+							xAmount = (x + 0.5) / width;
+							yAmount = (((height - y) + 0.5) / height) / aspectRatio - (((height - width) / (double) width) / 2.0);
 						} else {
 							// the image is a square
-							xAmount = (x + 0.5) / WIDTH;
-							yAmount = ((HEIGHT - y) + 0.5) / HEIGHT;
+							xAmount = (x + 0.5) / width;
+							yAmount = ((height - y) + 0.5) / height;
 						}
 					} else { 
 						// Apply Anti-Aliasing
-						if (WIDTH > HEIGHT) {
+						if (width > height) {
 							// the image is wider than it is tall
-							xAmount = ((x + (double) aax / (double) AA_DEPTH - 1.0) / WIDTH) *  aspectRatio - (((WIDTH - HEIGHT) / (double) HEIGHT) / 2.0);
-							yAmount = ((HEIGHT - y) + (double) aax / (double) AA_DEPTH - 1.0) / HEIGHT;
-						} else if (HEIGHT > WIDTH) {
+							xAmount = ((x + (double) aax / (double) aaDepth - 1.0) / width) *  aspectRatio - (((width - height) / (double) height) / 2.0);
+							yAmount = ((height - y) + (double) aax / (double) aaDepth - 1.0) / height;
+						} else if (height > width) {
 							// the image is taller than it is wide
-							xAmount = (x + (double) aax / (double) AA_DEPTH - 1.0) / WIDTH;
-							yAmount = (((HEIGHT - y) + (double) aax / (double) AA_DEPTH - 1.0) / HEIGHT) / aspectRatio - (((HEIGHT - WIDTH) / (double) WIDTH) / 2.0);
+							xAmount = (x + (double) aax / (double) aaDepth - 1.0) / width;
+							yAmount = (((height - y) + (double) aax / (double) aaDepth - 1.0) / height) / aspectRatio - (((height - width) / (double) width) / 2.0);
 						} else {
 							// the image is a square
-							xAmount = (x + (double) aax / (double) AA_DEPTH - 1.0) / WIDTH;
-							yAmount = ((HEIGHT - y) + (double) aax / (double) AA_DEPTH - 1.0) / HEIGHT;
+							xAmount = (x + (double) aax / (double) aaDepth - 1.0) / width;
+							yAmount = ((height - y) + (double) aax / (double) aaDepth - 1.0) / height;
 						}
 					}
 					Vect cameraRayOrigin = sceneCamera.getCameraPosition();
@@ -308,22 +329,22 @@ int main (int argc, char *argv[]) {
 			double totalGreen = 0;
 			double totalBlue = 0;
 
-			for (int iRed = 0; iRed < AA_DEPTH; iRed++)
+			for (int iRed = 0; iRed < aaDepth; iRed++)
 			{
 				totalRed += tempRed[iRed];
 			}
-			for (int iGreen = 0; iGreen < AA_DEPTH; iGreen++)
+			for (int iGreen = 0; iGreen < aaDepth; iGreen++)
 			{
 				totalGreen += tempGreen[iGreen];
 			}
-			for (int iBlue = 0; iBlue < AA_DEPTH; iBlue++)
+			for (int iBlue = 0; iBlue < aaDepth; iBlue++)
 			{
 				totalBlue += tempBlue[iBlue];
 			}
 
-			double avgRed = totalRed / AA_DEPTH;
-			double avgGreen = totalGreen / AA_DEPTH;
-			double avgBlue = totalBlue / AA_DEPTH;
+			double avgRed = totalRed / aaDepth;
+			double avgGreen = totalGreen / aaDepth;
+			double avgBlue = totalBlue / aaDepth;
 
 			pixels[pixelIndex].r = avgRed;
 			pixels[pixelIndex].g = avgGreen;
@@ -331,11 +352,9 @@ int main (int argc, char *argv[]) {
 		}
 	}
 
-	std::cout << pixels[76800].r << endl;
+	savebmp("scene.bmp", width, height, dpi, pixels);
 
-	savebmp("scene.bmp", WIDTH, HEIGHT, DPI, pixels);
-
-	delete pixels, tempRed, tempGreen, tempBlue;
+	delete [] pixels, tempRed, tempGreen, tempBlue;
 
 	t2 = clock();
 	float diff = ((float) t2 - (float) t1) / 1000.0f;
