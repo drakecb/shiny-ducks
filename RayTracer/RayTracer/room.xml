@@ -59,6 +59,17 @@
 </plane>
 
 <sphere>
+  <R>.8</R>
+  <G>.7</G>
+  <B>.5</B>
+  <F>.5</F>
+  <x>10</x>
+  <y>-17</y>
+  <z>0</z>
+  <radius>3</radius>
+</sphere>
+
+<sphere>
 	<R>1</R>
 	<G>1</G>
 	<B>0</B>

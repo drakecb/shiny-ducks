@@ -10,7 +10,7 @@ public:
 	Color();
 	Color(double, double, double, double);
 
-	// methods
+	// Methods
 	double getColorRed() { return red; }
 	double getColorGreen() { return green; }
 	double getColorBlue() { return blue; }
@@ -21,8 +21,7 @@ public:
 	void setColorBlue(double blueValue) { blue = blueValue; };
 	void setColorReflect(double reflectValue) { reflect = reflectValue; };
 
-	// for shadows
-	double brightness();
+	// For shadows
 	Color colorScalar(double scalar);
 	Color colorAdd(Color color);
 	Color colorMultiply(Color color);

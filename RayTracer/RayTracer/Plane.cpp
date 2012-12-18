@@ -13,15 +13,16 @@ Plane::Plane(Vect normalValue, double distanceValue, Color colorValue) {
 }
 
 double Plane::findIntersection(Ray ray) {
-	Vect ray_direction = ray.getRayDirection();
+	Vect rayDirection = ray.getRayDirection();
 
-	double a = ray_direction.dotProduct(normal);
+	double l = rayDirection.dotProduct(normal);
 
-	if (a == 0) {
-		// ray is parallel to the plane
+	if (l == 0) {
+		// Ray is parallel to the plane
 		return -1;
 	} else {
-		double b = normal.dotProduct(ray.getRayOrigin().vectAdd(normal.vectMult(distance).negative()));
-		return -1.0 * b / a;
+		// Line-Plane Intersection -> d = ((p0 - l0) . n) / l . n
+		double d = normal.dotProduct(ray.getRayOrigin().vectAdd(normal.vectMult(distance).negative()));
+		return -1.0 * d / l;
 	}
 }

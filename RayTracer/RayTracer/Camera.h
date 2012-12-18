@@ -4,17 +4,17 @@
 #include "Vect.h"
 
 class Camera {
-	Vect campos, camdir, camright, camdown;
+	Vect camPos, camDir, camRight, camDown;
 
 public:
 	Camera();
 	Camera(Vect, Vect, Vect, Vect);
 
 	// methods
-	Vect getCameraPosition() { return campos; }
-	Vect getCameraDirection() { return camdir; }
-	Vect getCameraRight() { return camright; }
-	Vect getCameraDown() { return camdown; }
+	Vect getCameraPosition() { return camPos; }
+	Vect getCameraDirection() { return camDir; }
+	Vect getCameraRight() { return camRight; }
+	Vect getCameraDown() { return camDown; }
 };
 
 #endif

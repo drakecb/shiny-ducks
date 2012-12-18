@@ -13,10 +13,6 @@ Color::Color(double r, double g, double b, double s) {
 	reflect = s;
 }
 
-double Color::brightness() {
-	return (red + green + blue) / 3.0;
-}
-
 Color Color::colorScalar(double scalar) {
 	return Color (red * scalar, green * scalar, blue * scalar, reflect);
 }

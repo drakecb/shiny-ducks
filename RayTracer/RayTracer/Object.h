@@ -7,7 +7,7 @@
 
 class Object {
 public:
-	Object();
+	Object() { };
 
 	// methods
 	virtual Color getColor() { return Color (0.0, 0.0, 0.0, 0); };

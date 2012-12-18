@@ -2,7 +2,7 @@
 
 using namespace std;
 
-int findWinningObjectIndex(vector<double> intersectingObjects) {
+int findClosestObjectIndex(vector<double> intersectingObjects) {
 	// return the index of the winning intersection
 	int indexMinValue;
 
@@ -15,13 +15,13 @@ int findWinningObjectIndex(vector<double> intersectingObjects) {
 			// if that intersection is greater than zero then it's our index of minimum value
 			return 0;
 		} else {
-			// otherwise the only  intersection value is negative
+			// otherwise the only intersection value is negative
 			return -1;
 		}
 	} else {
 		// otherwise there is more than one intersection
-		// first find the max value
 
+		// first find the max value
 		double max = 0;
 		for (int i = 0; i < intersectingObjects.size(); i++)
 		{
@@ -49,16 +49,16 @@ int findWinningObjectIndex(vector<double> intersectingObjects) {
 	} 
 }
 
-Color getColorAt(Vect intersectionPosition, Vect intersectionRayDirection, vector<Object *>sceneObjects, int winningObjectIndex, vector<Source *> lightSources, double accuracy, double ambientLight) {
-	Color winningObjectColor = sceneObjects.at(winningObjectIndex)->getColor();
-	Vect winningObjectNormal = sceneObjects.at(winningObjectIndex)->getNormalAt(intersectionPosition);
+Color getColorAt(Vect intersectionPosition, Vect intersectionRayDirection, vector<Object *>sceneObjects, int closestObjectIndex, vector<Source *> lightSources, double accuracy, double ambientLight) {
+	Color closestObjectColor = sceneObjects.at(closestObjectIndex)->getColor();
+	Vect closestObjectNormal = sceneObjects.at(closestObjectIndex)->getNormalAt(intersectionPosition);
 	
-	Color finalColor = winningObjectColor.colorScalar(ambientLight);
+	Color finalColor = closestObjectColor.colorScalar(ambientLight);
 
-	if (winningObjectColor.getColorReflect() > 0 && winningObjectColor.getColorReflect() <= 1) {
+	if (closestObjectColor.getColorReflect() > 0 && closestObjectColor.getColorReflect() <= 1) {
 		// reflection from objects with specular intensity
-		double dot1 = winningObjectNormal.dotProduct(intersectionRayDirection.negative());
-		Vect scalar1 = winningObjectNormal.vectMult(dot1);
+		double dot1 = closestObjectNormal.dotProduct(intersectionRayDirection.negative());
+		Vect scalar1 = closestObjectNormal.vectMult(dot1);
 		Vect add1 = scalar1.vectAdd(intersectionRayDirection);
 		Vect scalar2 = add1.vectMult(2);
 		Vect add2 = intersectionRayDirection.negative().vectAdd(scalar2);
@@ -74,20 +74,20 @@ Color getColorAt(Vect intersectionPosition, Vect intersectionRayDirection, vecto
 			reflectionIntersections.push_back(sceneObjects.at(reflectionIndex)->findIntersection(reflectionRay));
 		}
 
-		int winningObjectWithReflectionIndex = findWinningObjectIndex(reflectionIntersections);
+		int closestObjectWithReflectionIndex = findClosestObjectIndex(reflectionIntersections);
 		
-		if (winningObjectWithReflectionIndex != -1) {
+		if (closestObjectWithReflectionIndex != -1) {
 			// reflection ray missed everything else
-			if (reflectionIntersections.at(winningObjectWithReflectionIndex) > accuracy) {
+			if (reflectionIntersections.at(closestObjectWithReflectionIndex) > accuracy) {
 				// determine the position and direction at the point of intersection with the reflection ray
 				// the ray only affects the color if it reflected off something
-				Vect reflectionIntersectionPosition = intersectionPosition.vectAdd(reflectionDirection.vectMult(reflectionIntersections.at(winningObjectWithReflectionIndex)));
+				Vect reflectionIntersectionPosition = intersectionPosition.vectAdd(reflectionDirection.vectMult(reflectionIntersections.at(closestObjectWithReflectionIndex)));
 				Vect reflectionIntersectionRayDirection = reflectionDirection;
 
 				// Recursive call here
-				Color reflectionIntersectionColor = getColorAt(reflectionIntersectionPosition, reflectionIntersectionRayDirection, sceneObjects, winningObjectWithReflectionIndex, lightSources, accuracy, ambientLight);
+				Color reflectionIntersectionColor = getColorAt(reflectionIntersectionPosition, reflectionIntersectionRayDirection, sceneObjects, closestObjectWithReflectionIndex, lightSources, accuracy, ambientLight);
 
-				finalColor = finalColor.colorAdd(reflectionIntersectionColor.colorScalar(winningObjectColor.getColorReflect()));
+				finalColor = finalColor.colorAdd(reflectionIntersectionColor.colorScalar(closestObjectColor.getColorReflect()));
 			}
 		}
 	}
@@ -96,7 +96,7 @@ Color getColorAt(Vect intersectionPosition, Vect intersectionRayDirection, vecto
 	{
 		Vect lightDirection = lightSources.at(lightIndex)->getLightPosition().vectAdd(intersectionPosition.negative()).normalize();
 
-		float cosAngle = winningObjectNormal.dotProduct(lightDirection);
+		float cosAngle = closestObjectNormal.dotProduct(lightDirection);
 
 		if (cosAngle > 0) {
 			// test for shadows
@@ -106,7 +106,6 @@ Color getColorAt(Vect intersectionPosition, Vect intersectionRayDirection, vecto
 			float distanceToLightMagnitude = distanceToLight.magnitude();
 
 			Ray shadowRay (intersectionPosition, lightSources.at(lightIndex)->getLightPosition().vectAdd(intersectionPosition.negative()).normalize());
-			//Ray lightRay (intersectionPosition, lightDirection);
 
 			vector<double> secondaryIntersections;
 
@@ -122,18 +121,17 @@ Color getColorAt(Vect intersectionPosition, Vect intersectionRayDirection, vecto
 						shadowed = true;
 					}
 				}
-				//break;
 			}
 
 			if (shadowed == false) {
 				Color lightSourceColor = lightSources.at(lightIndex)->getLightColor();
-				Color actualColor = winningObjectColor.colorMultiply(lightSourceColor);
+				Color actualColor = closestObjectColor.colorMultiply(lightSourceColor);
 				Color adjustment = actualColor.colorScalar(cosAngle);
 				finalColor = finalColor.colorAdd(adjustment);
 
-				if (winningObjectColor.getColorReflect() > 0 && winningObjectColor.getColorReflect() <= 1) {
-					double dot1 = winningObjectNormal.dotProduct(intersectionRayDirection.negative());
-					Vect scalar1 = winningObjectNormal.vectMult(dot1);
+				if (closestObjectColor.getColorReflect() > 0 && closestObjectColor.getColorReflect() <= 1) {
+					double dot1 = closestObjectNormal.dotProduct(intersectionRayDirection.negative());
+					Vect scalar1 = closestObjectNormal.vectMult(dot1);
 					Vect add1 = scalar1.vectAdd(intersectionRayDirection);
 					Vect scalar2 = add1.vectMult(2);
 					Vect add2 = intersectionRayDirection.negative().vectAdd(scalar2);
@@ -143,7 +141,7 @@ Color getColorAt(Vect intersectionPosition, Vect intersectionRayDirection, vecto
 					double specular = reflectionDirection.dotProduct(lightDirection);
 					if (specular > 0) {
 						specular = pow(specular, 10);
-						finalColor = finalColor.colorAdd(lightSources.at(lightIndex)->getLightColor().colorScalar(specular * winningObjectColor.getColorReflect()));
+						finalColor = finalColor.colorAdd(lightSources.at(lightIndex)->getLightColor().colorScalar(specular * closestObjectColor.getColorReflect()));
 					}
 				}
 			} 
@@ -206,8 +204,8 @@ int main (int argc, char *argv[]) {
 
 	vector<Source *> lightSources;
 	vector<Object *> sceneObjects;
-	Object* sceneObject;
-	Source* lightSource;
+	Object* sceneObject = new Object();
+	Source* lightSource = new Light();
 
 	parseSceneDescription(sceneFileName, sceneObject, lightSource, sceneObjects, lightSources);
 	RGBType *pixels = new RGBType[width * height];
@@ -300,7 +298,7 @@ int main (int argc, char *argv[]) {
 						intersections.push_back(sceneObjects.at(index)->findIntersection(cameraRay));
 					}
 
-					int intersectionIndex = findWinningObjectIndex(intersections);
+					int intersectionIndex = findClosestObjectIndex(intersections);
 
 					if (intersectionIndex == -1) {
 						// set the background black
