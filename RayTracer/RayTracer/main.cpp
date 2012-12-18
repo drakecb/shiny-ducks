@@ -300,21 +300,21 @@ int main (int argc, char *argv[]) {
 						intersections.push_back(sceneObjects.at(index)->findIntersection(cameraRay));
 					}
 
-					int winningObjectIndex = findWinningObjectIndex(intersections);
+					int intersectionIndex = findWinningObjectIndex(intersections);
 
-					if (winningObjectIndex == -1) {
+					if (intersectionIndex == -1) {
 						// set the background black
 						tempRed[aaIndex] = 0;
 						tempGreen[aaIndex] = 0;
 						tempBlue[aaIndex] = 0;
 					} else {
 						// index corresponds to an object in the scene
-						if (intersections.at(winningObjectIndex) > ACCURACY) {
+						if (intersections.at(intersectionIndex) > ACCURACY) {
 							// determine the position and direction vectors at the point of intersection
-							Vect intersectionPosition = cameraRayOrigin.vectAdd(cameraRayDirection.vectMult(intersections.at(winningObjectIndex)));
+							Vect intersectionPosition = cameraRayOrigin.vectAdd(cameraRayDirection.vectMult(intersections.at(intersectionIndex)));
 							Vect intersectionRayDirection = cameraRayDirection;
 
-							Color pixelColor = getColorAt(intersectionPosition, intersectionRayDirection, sceneObjects, winningObjectIndex, lightSources, ACCURACY, AMBIENT_LIGHT);
+							Color pixelColor = getColorAt(intersectionPosition, intersectionRayDirection, sceneObjects, intersectionIndex, lightSources, ACCURACY, AMBIENT_LIGHT);
 
 							tempRed[aaIndex] = pixelColor.getColorRed();
 							tempGreen[aaIndex] = pixelColor.getColorGreen();
