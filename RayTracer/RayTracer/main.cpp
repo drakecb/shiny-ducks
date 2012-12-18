@@ -1,5 +1,14 @@
 #include "main.h"
 
+/*
+* Shiny-Ducks Ray Tracer
+* Authors: Rachel Agner, Arda C. Tugay, Samuel Kim, Caleb Drake, John MacAslan
+*
+* First Version Released on 12/18/2012
+* 
+* Note: Bitmap file generation and the Anti-Aliasing code blocks were acquired from tutorials on YouTube.
+*/
+
 using namespace std;
 
 int findClosestObjectIndex(vector<double> intersectingObjects) {
